@@ -1,0 +1,112 @@
+<html>
+	<head>
+		
+	</head>
+	<body>
+				<button onclick="getJson()">JSON</button>
+		<br><br>
+		<input type="text" id="enter-name" placeholder="Enter your name">
+		<input type="text" id="enter-surname" placeholder="Enter your surname">
+		<input type="number" id="enter-age" placeholder="Enter your age">
+		<input type="number" id="enter-mark" placeholder="Enter your mark">
+		<button onclick="addStudent()">Add students</button>
+		<br><br>
+
+		<p id="average">Average mark is </p>
+		<button onclick="getAverage()">Avarage mark</button>
+
+
+	</body>
+</html>
+
+<script>
+	count = 0;
+	class Student {
+	  		constructor(name, surname, age, mark) {
+	    	this.name = name;
+	    	this.surname=surname;
+	    	this.age=age;
+	    	this.mark=mark;
+	    	this.id = count++;
+
+	    	}
+	    	addToTable(id){
+    		var tr = document.createElement("tr");
+    		tr.id = "tr" + this.id.toString();
+			var td_name = document.createElement("td");
+			var td_surname = document.createElement("td");
+			var td_age = document.createElement("td");
+			var td_mark = document.createElement("td");
+			var td_delete = document.createElement("button");
+			td_mark.className = "mark";
+			td_name.innerHTML = this.name;
+			td_surname.innerHTML = this.surname;
+			td_age.innerHTML = this.age;
+			td_mark.innerHTML = this.mark;
+			td_delete.innerHTML = "Delete";
+			td_delete.id = this.id;
+			td_delete.addEventListener("click", function(){
+				for (var i = 0; i < arr.length; i++) {
+					if (arr[i].id == parseInt(this.id)) {
+						arr.splice(i, 1);
+						document.getElementById(id).removeChild(document.getElementById("tr" + this.id));
+					}
+				}
+			});
+			tr.appendChild(td_name);
+			tr.appendChild(td_surname);
+			tr.appendChild(td_age);
+			tr.appendChild(td_mark);
+			tr.appendChild(td_mark);
+			tr.appendChild(td_delete);
+			document.getElementById(id).appendChild(tr);
+    	}
+	}
+	var table = document.createElement("table");
+	table.id = "table";
+	var tbody = document.createElement("tbody");
+	tbody.id = "table-body"; 
+	table.appendChild(tbody);
+	document.body.prepend(table);
+	var arr = [];
+
+
+	function getJson(){
+
+		var xhr = new XMLHttpRequest();
+		var url = 'text.json';
+		xhr.open('GET', url, false);
+		xhr.setRequestHeader('Content-Type', 'application/json');
+		xhr.send();
+		var json = JSON.parse(xhr.responseText)
+		for (i in json) {
+			var student = new Student(json[i].name, json[i].surname, json[i].age, json[i].mark)
+			student.addToTable('table-body');
+			arr.push(student);
+		}
+
+	}
+
+	function addStudent(){
+		var inputName = document.getElementById('enter-name').value;
+		var inputSurname = document.getElementById('enter-surname').value;
+		var inputAge = document.getElementById('enter-age').value;
+		var inputMark = document.getElementById('enter-mark').value;
+
+		var student = new Student(inputName, inputSurname, inputAge, inputMark);
+
+		arr.push(student);
+	  		arr[arr.length-1].addToTable('table-body');
+	}
+
+  	function getAverage() {
+  		var marks = document.getElementsByClassName('mark');
+	  	var sum=0;
+	  	for(var i=0; i<marks.length;i++){
+	  		sum+=parseInt(marks[i].innerHTML, 10);
+	  	}
+	  	var average= sum / marks.length;
+	  	document.getElementById('average').innerHTML = "Average mark is " + average;
+  	}
+</script>
+
