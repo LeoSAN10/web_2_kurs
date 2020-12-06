@@ -1,0 +1,32 @@
+[
+    {
+        "name": "Aleks",
+        "surname": "Lawman",
+        "age": 22,
+        "mark": 7.4
+    },
+    {
+        "name": "Vadim",
+        "surname": "Ivanov",
+        "age": 18,
+        "mark": 8
+    },
+    {
+        "name": "Aleksey",
+        "surname": "Matov",
+        "age": 21,
+        "mark": 6.9
+    },
+    {
+        "name": "Gleb",
+        "surname": "Kirilov",
+        "age": 20,
+        "mark": 9.1
+    },
+    {
+        "name": "Vladislav",
+        "surname": "Farmer",
+        "age": 17,
+        "mark": 8.3
+    } 
+]
