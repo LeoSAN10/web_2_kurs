@@ -1,0 +1,113 @@
+<html>
+	<head>
+		
+	</head>
+	<body>
+				<button onclick="getJson()">JSON</button>
+		<br><br>
+		<input type="text" id="enter-name" placeholder="Enter your name">
+		<input type="text" id="enter-surname" placeholder="Enter your surname">
+		<input type="number" id="enter-age" placeholder="Enter your age">
+		<input type="number" id="enter-mark" placeholder="Enter your mark">
+		<button onclick="addStudent()">Add students</button>
+		<br><br>
+
+		<p id="average">Average mark is </p>
+		<button onclick="getAverage()">Avarage mark</button>
+
+
+	</body>
+</html>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<script>
+	count = 0;
+	var arr = [];
+	class Student {
+	  		constructor(name, surname, age, mark) {
+	    	this.name = name;
+	    	this.surname=surname;
+	    	this.age=age;
+	    	this.mark=mark;
+	    	this.id = count++;
+
+	    	}
+	    	addToTable(id){
+	    		var tr = $("<tr></tr>").attr("id", "tr" + this.id.toString());
+				var td_name = $("<td></td>");
+				var td_surname = $("<td></td>");
+				var td_age = $("<td></td>");
+				var td_mark = $("<td></td>").addClass("mark");
+				var td_delete = $("<button></button>").attr("id", this.id);
+				td_name.html(this.name);
+				td_surname.html(this.surname);
+				td_age.html(this.age);
+				td_mark.html(this.mark);
+				td_delete.html("Delete");
+				td_delete.bind("click", function(){
+					for (var i = 0; i < arr.length; i++) {
+						if (arr[i].id == parseInt(this.id)) {
+							arr.splice(i, 1);
+							$("#tr" + this.id).remove();
+						}
+					}
+				});
+				tr.append(td_name);
+				tr.append(td_surname);
+				tr.append(td_age);
+				tr.append(td_mark);
+				tr.append(td_mark);
+				tr.append(td_delete);
+				$('#'+id).append(tr);
+    		}
+	}
+	var table = $("<table></table>").attr("id", "table");
+	var tbody = $("<tbody></tbody>").attr("id", "table-body");
+	table.append(tbody);
+	$('body').prepend(table);
+
+
+	function getJson(){
+		$.ajax({
+		    url:"text.json",
+		    type:"GET",
+		    async: false,
+		    dataType: "json",
+		    success: function(json) {
+                for (i in json) {
+                	var student = new Student(json[i].name, json[i].surname, json[i].age, json[i].mark)
+					student.addToTable('table-body');
+					arr.push(student);
+                }
+		    },
+		    error: function(e) {
+		       console.log(e);
+		    }
+		});
+	}
+
+	function addStudent(){
+		var inputName = $('#enter-name').val();
+		var inputSurname = $('#enter-surname').val();
+		var inputAge = $('#enter-age').val();
+		var inputMark = $('#enter-mark').val();
+
+		var student = new Student(inputName, inputSurname, inputAge, inputMark);
+
+		arr.push(student);
+	  		arr[arr.length-1].addToTable('table-body');
+	}
+
+  	function getAverage() {
+  		var marks = $('.mark');
+	  	var sum=0;
+	  	for(var i=0; i<marks.length;i++){
+	  		sum+=parseFloat(marks[i].innerHTML, 10);
+	  	}
+	  	var average= sum / marks.length;
+	  	$('#average').html("Average mark is " + average);
+  	}
+</script>
+
+<!-- chrome.exe --user-data-dir="C:/Chrome dev session" --disable-web-security -->
