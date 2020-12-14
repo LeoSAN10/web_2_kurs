@@ -1,0 +1,104 @@
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
+<div id='34' ng-app="myApp" ng-controller="myCtrl">
+
+      <button ng-click='getJson()'>JSON</button>
+      <br><br>
+      <input type="text" ng-model="name" id="enter-name" placeholder="Enter your name">
+      <input type="text" ng-model="surname" id="enter-surname" placeholder="Enter your surname">
+      <input type="number" ng-model="age" id="enter-age" placeholder="Enter your age">
+      <input type="number" ng-model="mark" id="enter-mark" placeholder="Enter your mark">
+      <button id="add-button" ng-click='addStudent()'>Add student</button>
+      <button id="save-button" ng-click='editStudent()'>Save</button>
+      <br><br>
+      <p id="average">Average mark is {{average}}</p>
+      <button ng-click='getAverage()'>Avarage mark</button>
+      <br>
+      <ul>
+        <li id="{{arr.id}}" ng-repeat="arr in arrs">
+          <p>{{arr.name}} {{arr.surname}} {{arr.age}} {{arr.mark}} 
+          <button ng-click='changeStudent(arr.id)'>Change student</button>
+          <button ng-click='deleteStudent(arr.id)'>Delete student</button></p>
+        </li>
+      </ul>
+
+</div>
+
+<script>
+  document.getElementById('save-button').style.display = "none";
+  var count = 0
+  var changeId = null
+  var arr = []
+  class Student {
+        constructor(name, surname, age, mark) {
+        this.name = name;
+        this.surname=surname;
+        this.age=age;
+        this.mark=mark;
+        this.id = count++;
+        }
+  }
+  var app = angular.module('myApp', []);
+  app.controller('myCtrl', function($scope, $http) {
+    $scope.average = null
+    $scope.arrs = arr
+    $scope.getJson = function () {
+    $http({
+        method: 'GET',
+        url: 'text.json'
+    }).then(function (response){
+      for (i in response.data) {
+        var student = new Student(response.data[i].name, response.data[i].surname, response.data[i].age, response.data[i].mark)
+        arr.push(student);
+      }
+    },function (error){});
+    };
+    $scope.addStudent = function () {
+      var student = new Student($scope.name, $scope.surname, $scope.age, $scope.mark)
+      arr.push(student);
+    };
+    $scope.getAverage = function () {
+      var sum = 0
+      for(var i=0; i<arr.length; i++){
+          sum += arr[i].mark;
+      }
+      $scope.average = sum / arr.length;
+    };
+    $scope.changeStudent = function (id) {
+      for (var i = 0; i < arr.length; i++) {
+        if (arr[i].id == id) {
+          $scope.name = arr[i].name;
+          $scope.surname = arr[i].surname;
+          $scope.age = arr[i].age;
+          $scope.mark = arr[i].mark;
+          changeId = id;
+          document.getElementById('add-button').style.display = "none";
+          document.getElementById('save-button').style.display = "inline";
+        }
+      }
+    };
+    $scope.deleteStudent = function (id) {
+      for (var i = 0; i < arr.length; i++) {
+        if (arr[i].id == id) {
+          arr.splice(i, 1);
+        }
+      }
+    }
+    $scope.editStudent = function (id) {
+      for (var i = 0; i < arr.length; i++) {
+        if (arr[i].id == changeId) {
+          arr[i].name = $scope.name;
+          arr[i].surname = $scope.surname;
+          arr[i].age = $scope.age;
+          arr[i].mark = $scope.mark;
+        }
+      }
+      changeId = null
+      document.getElementById('save-button').style.display = "none";
+      document.getElementById('add-button').style.display = "inline";
+      $scope.name = '';
+      $scope.surname = '';
+      $scope.age = '';
+      $scope.mark = '';
+    }
+  });
+</script>
